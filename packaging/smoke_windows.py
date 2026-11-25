@@ -25,8 +25,10 @@ def check_installer(installer: Path) -> None:
         if not executable.is_file():
             raise RuntimeError("El instalador no creó OCR-DOC.exe.")
         environment = os.environ.copy()
-        environment["PATH"] = os.pathsep.join([
-            str(Path(environment["SystemRoot"]) / "System32"), environment["SystemRoot"]])
+        # os.environ is case-insensitive on Windows, but its copy is a plain dict
+        # whose keys are upper-case, so read SystemRoot from os.environ itself.
+        system_root = os.environ.get("SystemRoot", r"C:\Windows")
+        environment["PATH"] = os.pathsep.join([str(Path(system_root) / "System32"), system_root])
         # Deliberately wrong inherited settings must not override bundled resources.
         environment["TESSERACT_CMD"] = str(root / "nonexistent.exe")
         environment["TESSDATA_PREFIX"] = str(root / "nonexistent-tessdata")
