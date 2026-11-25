@@ -5,10 +5,16 @@ y descargarlos como Word. Diseñada para un flujo sencillo: cargar → revisar �
 descargar. Funciona con el mismo código en Windows y Linux.
 
 **Estado:** primera versión implementada. En el entorno de desarrollo pasaron
-14 pruebas de lógica y procesamiento de imágenes. Las pruebas integradas PDF → DOCX,
+18 pruebas de lógica, procesamiento de imágenes y empaquetado. Las pruebas integradas PDF → DOCX,
 OCR real y pantalla inicial, y la revisión visual de Streamlit están pendientes:
 este entorno no pudo descargar dependencias y no tiene Tesseract. La instalación
 y apertura en Windows también necesitan validación en un equipo Windows.
+
+Se agregó el empaquetado de Windows con Python y OCR incluidos: ver
+[packaging/README.md](packaging/README.md). **El instalador todavía no se ha
+compilado ni ejecutado en Windows.** El flujo de GitHub Actions lo construirá y
+probará cuando se publique este código; no basta con descargar el ZIP del código
+para obtener una aplicación instalable.
 
 ## Qué permite
 
@@ -29,7 +35,16 @@ requerir edición manual en Word. No es un reconocedor de escritura a mano ni cr
 firmas digitales. Una página de origen puede ocupar más de una página en Word
 según la cantidad de texto y los recortes.
 
-## Windows: instalación una sola vez
+## Windows: instalador autónomo (cuando se haya compilado)
+
+Descarga `OCR-DOC-Setup-0.1.0-windows-x64.exe` desde el artefacto de GitHub Actions
+o desde Releases si ya se publicó una versión. Instálalo y abre **OCR DOC** con el
+acceso directo. Esta modalidad incluye Python y Tesseract en español: tu jefa no
+necesita instalarlos ni ejecutar comandos. El instalador funciona por usuario y
+no pide permisos de administrador. Se mantiene abierta una ventana de inicio
+mientras el programa está funcionando en el navegador.
+
+## Windows: instalación desde el código (alternativa para desarrollo)
 
 1. Descarga este proyecto como ZIP desde GitHub y **extrae toda la carpeta**.
 2. Instala **Python 3.12 o superior de 64 bits**, con el lanzador `py`, desde

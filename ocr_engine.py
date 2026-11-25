@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 from typing import Callable
@@ -24,6 +25,10 @@ class ConversionError(Exception):
 
 
 def tesseract_path() -> str | None:
+    # Frozen Windows builds use their own engine, never a system installation.
+    if getattr(sys, "frozen", False):
+        bundled = Path(getattr(sys, "_MEIPASS", Path(sys.executable).parent)) / "tesseract" / "tesseract.exe"
+        return str(bundled) if bundled.is_file() else None
     explicit = os.environ.get("TESSERACT_CMD")
     if explicit and Path(explicit).is_file():
         return explicit
@@ -45,6 +50,8 @@ def run_tesseract(args: list[str], timeout: int = 120) -> subprocess.CompletedPr
         raise ConversionError("Falta Tesseract OCR. Consulta la instalación en README.md.")
     env = os.environ.copy()
     env["OMP_THREAD_LIMIT"] = "1"
+    if getattr(sys, "frozen", False):
+        env["TESSDATA_PREFIX"] = str(Path(executable).parent / "tessdata")
     try:
         return subprocess.run(
             [executable, *args], capture_output=True, timeout=timeout, env=env,
